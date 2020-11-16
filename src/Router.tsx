@@ -16,10 +16,12 @@ import {
   WinnerEdit,
   WinnerList,
 } from './templates/index';
+import { Header } from './components/Header';
 
 const Router: FC = () => {
   return (
     <BrowserRouter>
+      <Header />
       <Switch>
         {/* Top Page */}
         <Route exact path="(/)?" component={TopPage} />

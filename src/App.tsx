@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import Router from './Router';
-import Header from './components/Header/Header';
+// import Header from './components/Header/Header';
 import { createStyles, makeStyles, Theme } from '@material-ui/core';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -14,7 +14,7 @@ const App: FC = () => {
 
   return (
     <>
-      <Header />
+      {/* <Header /> */}
       <div className={classes.offset}>
         <Router />
       </div>
