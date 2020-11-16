@@ -1,44 +1,36 @@
 import React, { FC } from 'react'
-import { Link } from 'react-router-dom';
+import { createStyles, makeStyles } from '@material-ui/core';
+import ToppageBg from '../assets/images/toppage-bg.jpg';
+
+const useStyles = makeStyles(() =>
+  createStyles({
+    root: {
+      alignItems: 'center',
+      backgroundBlendMode: 'lighten',
+      backgroundColor: 'rgba(255, 255, 255, 0.8)',
+      backgroundImage: `url(${ToppageBg})`,
+      backgroundPosition: 'center',
+      backgroundRepeat: 'no-repeat',
+      backgroundSize: 'cover',
+      display: 'flex',
+      height: '100vh',
+      justifyContent: 'center',
+    },
+    catch: {
+      fontWeight: 'normal',
+    },
+  }),
+);
 
 const TopPage: FC = () => {
+  const classes = useStyles();
+
   return (
-    <>
-      <p>This is TopPage.</p>
-      <div>
-        <Link to="/winner" >Winner List</Link>
-      </div>
-      <div>
-        <Link to="/winner/aaa" >Winner Detail</Link>
-      </div>
-      <div>
-        <Link to="/winner/edit" >Create Winner</Link>
-      </div>
-      <div>
-        <Link to="/winner/edit/aaa" >Edit Winner</Link>
-      </div>
-      <div>
-        <Link to="/gift" >Gift List</Link>
-      </div>
-      <div>
-        <Link to="/gift/aaa" >Gift Detail</Link>
-      </div>
-      <div>
-        <Link to="/gift/edit" >CreateGift</Link>
-      </div>
-      <div>
-        <Link to="/gift/edit/aa" >Edit Gift</Link>
-      </div>
-      <div>
-        <Link to="/rotory-on" >Start Rotory</Link>
-      </div>
-      <div>
-        <Link to="/rotory" >Rotory List</Link>
-      </div>
-      <div>
-        <Link to="/rotory/aaa" >Rotory Detail</Link>
-      </div>
-    </>
+    <div className={classes.root}>
+      <h1 className={classes.catch}>
+        Rotory On!は、抽選会のできるWebアプリです
+      </h1>
+    </div>
   );
 };
 
