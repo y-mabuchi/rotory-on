@@ -1,8 +1,21 @@
 import React, { FC } from 'react';
+import { makeStyles, createStyles } from '@material-ui/core/styles';
+
+const useStyles = makeStyles(() =>
+  createStyles({
+    root: {
+      marginTop: 80,
+    },
+  }),
+);
 
 const RotoryOn: FC = () => {
+  const classes = useStyles();
+
   return (
-    <p>This is RotoryOn.</p>
+    <div className={classes.root}>
+      <p>This is RotoryOn.</p>
+    </div>
   );
 };
 
