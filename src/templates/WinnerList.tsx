@@ -1,26 +1,18 @@
+// React
 import React, { FC } from 'react'
+import { WinnerItem } from '../components/Winner';
+// Material-UI
 import { makeStyles, createStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Container from '@material-ui/core/Container';
 import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
 import Divider from '@material-ui/core/Divider';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import ListItemAvatar from '@material-ui/core/ListItemAvatar';
-import IconButton from '@material-ui/core/IconButton';
-import Avatar from '@material-ui/core/Avatar';
-import EditIcon from '@material-ui/icons/Edit';
-import DeleteIcon from '@material-ui/icons/Delete';
-import { WinnerItem } from '../components/Winner';
+import Typography from '@material-ui/core/Typography';
 
 const useStyles = makeStyles(() =>
   createStyles({
     root: {
       marginTop: 80,
-    },
-    text: {
-      flexGrow: 1,
     },
   }),
 );
@@ -30,7 +22,7 @@ const WinnerList: FC = () => {
   const winners = [
     {
       avatarString: 'light',
-      name: '夜神 月',
+      name: '夜神月',
     },
     {
       avatarString: 'l',
@@ -40,12 +32,27 @@ const WinnerList: FC = () => {
       avatarString: 'ryuk',
       name: 'リューク',
     },
+    {
+      avatarString: 'misa',
+      name: '弥海砂',
+    },
+    {
+      avatarString: 'watari',
+      name: 'ワタリ',
+    },
   ];
 
   return (
     <div className={classes.root}>
       <CssBaseline />
       <Container maxWidth="sm">
+        <Typography
+          variant="h4"
+          component="h2"
+          align="center"
+        >
+          当選者一覧
+        </Typography>
         <List>
           {winners.map(winner => (
             <>
