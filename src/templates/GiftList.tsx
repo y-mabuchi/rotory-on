@@ -1,4 +1,4 @@
-// Ract
+// React
 import React, { FC } from 'react';
 // Material-UI
 import { makeStyles, createStyles } from '@material-ui/core/styles';
@@ -45,7 +45,6 @@ const GiftList: FC = () => {
       supplier: '夜神月',
       path: 'https://firebasestorage.googleapis.com/v0/b/rotory-on.appspot.com/o/watch.jpg?alt=media&token=fda62fbe-0c0d-4fe7-ba5a-60ce8d014d71',
     },
-
   ];
 
   return (
