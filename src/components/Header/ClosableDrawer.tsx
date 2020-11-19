@@ -1,16 +1,23 @@
+// React
 import React, { FC } from 'react';
 import { useHistory } from 'react-router-dom';
-import Divider from '@material-ui/core/Divider';
-import Drawer from '@material-ui/core/Drawer';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
+// Material-UI
 import { makeStyles, createStyles } from '@material-ui/core/styles';
-import HomeIcon from '@material-ui/icons/Home';
-import GroupIcon from '@material-ui/icons/Group';
-import CardGiftcardIcon from '@material-ui/icons/CardGiftcard';
-import ToysIcon from '@material-ui/icons/Toys';
+import {
+  Divider,
+  Drawer,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+} from '@material-ui/core';
+import {
+  Home,
+  Group,
+  CardGiftcard,
+  Toys,
+  Check,
+} from '@material-ui/icons';
 
 const useStyles = makeStyles((theme) =>
   createStyles({
@@ -63,7 +70,7 @@ const ClosableDrawer: FC<Props> = ({ open, onClose }) => {
             }}
           >
             <ListItemIcon>
-              <HomeIcon />
+              <Home />
             </ListItemIcon>
             <ListItemText
               primary="トップへ戻る"
@@ -80,7 +87,7 @@ const ClosableDrawer: FC<Props> = ({ open, onClose }) => {
             }}
           >
             <ListItemIcon>
-              <ToysIcon />
+              <Toys />
             </ListItemIcon>
             <ListItemText
               primary="抽選"
@@ -90,12 +97,29 @@ const ClosableDrawer: FC<Props> = ({ open, onClose }) => {
           <ListItem
             className={classes.listItem}
             onClick={(e) => {
+              handleClick('/rotory');
+              onClose(e);
+            }}
+          >
+            <ListItemIcon>
+              <Check />
+            </ListItemIcon>
+            <ListItemText
+              primary="抽選結果"
+            />
+          </ListItem>
+
+          <Divider />
+
+          <ListItem
+            className={classes.listItem}
+            onClick={(e) => {
               handleClick('/winner');
               onClose(e);
             }}
           >
             <ListItemIcon>
-              <GroupIcon />
+              <Group />
             </ListItemIcon>
             <ListItemText
               primary="当選者一覧"
@@ -110,7 +134,7 @@ const ClosableDrawer: FC<Props> = ({ open, onClose }) => {
             }}
           >
             <ListItemIcon>
-              <CardGiftcardIcon />
+              <CardGiftcard />
             </ListItemIcon>
             <ListItemText
               primary="景品一覧"
