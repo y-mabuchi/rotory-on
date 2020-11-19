@@ -7,11 +7,13 @@ import {
   Theme,
 } from '@material-ui/core/styles';
 import {
+  Button,
   CssBaseline,
   Container,
   FormControl,
   InputLabel,
   MenuItem,
+  Paper,
   Select,
   Typography,
 } from '@material-ui/core';
@@ -25,9 +27,24 @@ const useStyles = makeStyles((theme: Theme) =>
       marginBottom: 24,
     },
     formControl: {
-      margin: theme.spacing(1),
+      // margin: theme.spacing(1),
+      marginBottom: 24,
       width: '100%',
-      // minWidth: 320,
+    },
+    paper: {
+      alignItems: 'center',
+      display: 'flex',
+      justifyContent: 'center',
+      height: 300,
+      marginBottom: 24,
+      width: '100%',
+    },
+    btn: {
+      width: 'calc(50% - 4px)',
+    },
+    btnStart: {
+      width: 'calc(50% - 4px)',
+      marginRight: 8,
     },
   }),
 );
@@ -80,6 +97,17 @@ const RotoryOn: FC = () => {
             ))}
           </Select>
         </FormControl>
+        <Paper className={classes.paper}>
+          <Typography variant="h3">
+            夜神月
+          </Typography>
+        </Paper>
+        <Button variant="outlined" color="primary" className={classes.btnStart}>
+          START!
+        </Button>
+        <Button variant="outlined" color="secondary" className={classes.btn}>
+          STOP!
+        </Button>
       </Container>
     </div>
   );
