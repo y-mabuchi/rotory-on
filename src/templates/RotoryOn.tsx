@@ -10,12 +10,10 @@ import {
   CssBaseline,
   Container,
   FormControl,
-  FormHelperText,
   InputLabel,
   MenuItem,
   Select,
   Typography,
-  ThemeProvider,
 } from '@material-ui/core';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -28,18 +26,33 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     formControl: {
       margin: theme.spacing(1),
-      minWidth: 320,
+      width: '100%',
+      // minWidth: 320,
     },
   }),
 );
 
 const RotoryOn: FC = () => {
   const classes = useStyles();
+  const gifts = [
+    {
+      id: 0,
+      name: '特賞:デスノート',
+    },
+    {
+      id: 1,
+      name: '1等:死神の目',
+    },
+    {
+      id: 2,
+      name: '2等:裏蓋仕込み付き腕時計',
+    },
+  ];
 
   return (
     <div className={classes.root}>
       <CssBaseline />
-      <Container maxWidth="md">
+      <Container maxWidth="sm">
         <Typography
           className={classes.title}
           variant="h4"
@@ -60,21 +73,11 @@ const RotoryOn: FC = () => {
             labelId="rotory-type"
             id="select-gift"
           >
-            <MenuItem
-              value={0}
-            >
-              特賞
-            </MenuItem>
-            <MenuItem
-              value={1}
-            >
-              1等
-            </MenuItem>
-            <MenuItem
-              value={2}
-            >
-              2等
-            </MenuItem>
+            {gifts.map(gift => (
+              <MenuItem value={gift.id}>
+                {gift.name}
+              </MenuItem>
+            ))}
           </Select>
         </FormControl>
       </Container>
