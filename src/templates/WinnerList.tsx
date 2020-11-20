@@ -1,5 +1,5 @@
 // React
-import React, { FC } from 'react'
+import React, { FC, useEffect, useState } from 'react'
 import { WinnerItem } from '../components/Winner';
 // Material-UI
 import { makeStyles, createStyles } from '@material-ui/core/styles';
@@ -8,6 +8,10 @@ import Container from '@material-ui/core/Container';
 import List from '@material-ui/core/List';
 import Divider from '@material-ui/core/Divider';
 import Typography from '@material-ui/core/Typography';
+// Firestore
+import {
+  db
+} from '../firebase';
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -17,30 +21,29 @@ const useStyles = makeStyles(() =>
   }),
 );
 
+type User = {
+  avatarString: string;
+  name: string;
+  uid: string;
+};
+
 const WinnerList: FC = () => {
   const classes = useStyles();
-  const winners = [
-    {
-      avatarString: 'light',
-      name: '夜神月',
-    },
-    {
-      avatarString: 'l',
-      name: 'エル',
-    },
-    {
-      avatarString: 'ryuk',
-      name: 'リューク',
-    },
-    {
-      avatarString: 'misa',
-      name: '弥海砂',
-    },
-    {
-      avatarString: 'watari',
-      name: 'ワタリ',
-    },
-  ];
+  const [users, setUsers] = useState<User[]>([]);
+
+  useEffect(() => {
+    const userList: User[] = [];
+
+    db.collection('users')
+      .get()
+      .then(snapshots => {
+        snapshots.forEach(snapshot => {
+          const user = snapshot.data();
+          userList.push(user as User);
+        })
+        setUsers(userList);
+      });
+  }, []);
 
   return (
     <div className={classes.root}>
@@ -54,11 +57,11 @@ const WinnerList: FC = () => {
           当選者一覧
         </Typography>
         <List>
-          {winners.map(winner => (
-            <>
-              <WinnerItem avatarString={winner.avatarString} name={winner.name} />
+          {users.map(user => (
+            <div key={user.uid}>
+              <WinnerItem avatarString={user.avatarString} name={user.name} />
               <Divider />
-            </>
+            </div>
           ))}
         </List>
       </Container>
