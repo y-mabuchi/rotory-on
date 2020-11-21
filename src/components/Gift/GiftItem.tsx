@@ -15,6 +15,7 @@ const useStyles = makeStyles(() =>
     },
     media: {
       height: 0,
+      backgroundSize: 'contain',
       paddingTop: '56.25%',
     },
   }),
