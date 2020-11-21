@@ -1,5 +1,5 @@
 // React
-import React, { FC } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 // Material-UI
 import {
   createStyles,
@@ -17,6 +17,10 @@ import {
   Select,
   Typography,
 } from '@material-ui/core';
+// Firestore
+import { db } from '../firebase';
+// Types
+import { Gift, User } from '../types';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -51,20 +55,45 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const RotoryOn: FC = () => {
   const classes = useStyles();
-  const gifts = [
-    {
-      id: 0,
-      name: '特賞:デスノート',
-    },
-    {
-      id: 1,
-      name: '1等:死神の目',
-    },
-    {
-      id: 2,
-      name: '2等:裏蓋仕込み付き腕時計',
-    },
-  ];
+  const [gifts, setGifts] = useState<Gift[]>([]);
+  const [users, setUsers] = useState<User[]>([]);
+  const [selectedUser, setSelectedUser] = useState<string | null>(null);
+
+  useEffect(() => {
+    const giftList: Gift[] = [];
+
+    db.collection('gifts')
+      .orderBy('order', 'asc')
+      .get()
+      .then(snapshots => {
+        snapshots.forEach(snapshot => {
+          const gift = snapshot.data();
+          giftList.push(gift as Gift);
+        });
+        setGifts(giftList);
+      });
+    
+    const userList: User[] = [];
+
+    db.collection('users')
+      .get()
+      .then(snapshots => {
+        snapshots.forEach(snapshot => {
+          const user = snapshot.data();
+          userList.push(user as User);
+        });
+        setUsers(userList);
+        setSelectedUser(userList[0].name);
+      })
+  }, []);
+
+  const choiseUser = () => {
+    const index = Math.floor(Math.random() * users.length);
+    const user: User = users[index];
+    console.log(index);
+    console.log(user.name);
+    setSelectedUser(user.name);
+  };
 
   return (
     <div className={classes.root}>
@@ -91,21 +120,30 @@ const RotoryOn: FC = () => {
             id="select-gift"
           >
             {gifts.map(gift => (
-              <MenuItem value={gift.id}>
-                {gift.name}
+              <MenuItem value={gift.uid}>
+                {gift.award} : {gift.name}
               </MenuItem>
             ))}
           </Select>
         </FormControl>
         <Paper className={classes.paper}>
           <Typography variant="h3">
-            夜神月
+            {selectedUser}
           </Typography>
         </Paper>
-        <Button variant="outlined" color="primary" className={classes.btnStart}>
+        <Button
+          className={classes.btnStart}
+          color="primary"
+          onClick={() => choiseUser()}
+          variant="outlined"
+        >
           START!
         </Button>
-        <Button variant="outlined" color="secondary" className={classes.btn}>
+        <Button
+          variant="outlined"
+          color="secondary"
+          className={classes.btn}
+        >
           STOP!
         </Button>
       </Container>
