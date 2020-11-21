@@ -18,7 +18,7 @@ import {
   Typography,
 } from '@material-ui/core';
 // Firestore
-import { db } from '../firebase';
+import { db, FirebaseTimestamp } from '../firebase';
 // Types
 import { Gift, User } from '../types';
 
@@ -53,18 +53,22 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
+const giftsRef = db.collection('gifts');
+const usersRef = db.collection('users');
+
 const RotoryOn: FC = () => {
   const classes = useStyles();
   const [gifts, setGifts] = useState<Gift[]>([]);
   const [users, setUsers] = useState<User[]>([]);
+  const [targetUsers, setTargetUsers] = useState<User[]>([]);
   const [selectedUser, setSelectedUser] = useState('');
-  const [selectedGift, setSelectedGift] = useState('');
-  const [timerId, setTimerId] = useState('');
+  const [selectedGiftId, setSelectedGiftId] = useState('');
+  const [timerId, setTimerId] = useState(0);
 
   useEffect(() => {
     const giftList: Gift[] = [];
 
-    db.collection('gifts')
+    giftsRef
       .orderBy('order')
       .get()
       .then(snapshots => {
@@ -77,7 +81,7 @@ const RotoryOn: FC = () => {
     
     const userList: User[] = [];
 
-    db.collection('users')
+    usersRef
       .get()
       .then(snapshots => {
         snapshots.forEach(snapshot => {
@@ -85,18 +89,37 @@ const RotoryOn: FC = () => {
           userList.push(user as User);
         });
         setUsers(userList);
-        setSelectedUser(userList[0].name);
       })
   }, []);
 
   const choiseUser = () => {
-    const index = Math.floor(Math.random() * users.length);
-    const user: User = users[index];
-    setSelectedUser(user.name);
+    if (!selectedGiftId) {
+      alert('賞を選択してください。');
+      return;
+    }
+    const id = window.setInterval(() => {
+      const index = Math.floor(Math.random() * targetUsers.length);
+      const user: User = targetUsers[index];
+      setSelectedUser(user.name);
+    }, 10);
+    setTimerId(id);
   };
 
+  const stopChoise = async () => {
+    clearInterval(timerId);
+    setTimerId(0);
+    await giftsRef.doc(selectedGiftId).update({
+      winner: selectedUser,
+      updated_at: FirebaseTimestamp.now()
+    });
+  }
+
   const handleChange = ((e: React.ChangeEvent<{value: unknown}>) => {
-    setSelectedGift(e.target.value as string);
+    const giftId = e.target.value as string;
+    setSelectedGiftId(giftId);
+    const supplier = gifts.filter(gift => gift.uid === giftId)[0].supplier;
+    const userList = users.filter(user => user.name !== supplier);
+    setTargetUsers(userList);
   });
 
   return (
@@ -123,7 +146,7 @@ const RotoryOn: FC = () => {
             id="select-gift"
             labelId="rotory-type"
             onChange={handleChange}
-            value={selectedGift}
+            value={selectedGiftId}
           >
             {gifts.map(gift => (
               <MenuItem value={gift.uid}>
@@ -140,15 +163,17 @@ const RotoryOn: FC = () => {
         <Button
           className={classes.btnStart}
           color="primary"
+          disabled={(timerId !== 0) ? true : false}
           onClick={() => choiseUser()}
           variant="outlined"
         >
           START!
         </Button>
         <Button
-          variant="outlined"
-          color="secondary"
           className={classes.btn}
+          color="secondary"
+          onClick={() => stopChoise()}
+          variant="outlined"
         >
           STOP!
         </Button>
