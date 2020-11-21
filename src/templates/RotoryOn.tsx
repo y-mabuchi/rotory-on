@@ -1,5 +1,5 @@
 // React
-import React, { FC } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 // Material-UI
 import {
   createStyles,
@@ -17,6 +17,10 @@ import {
   Select,
   Typography,
 } from '@material-ui/core';
+// Firestore
+import { db, FirebaseTimestamp } from '../firebase';
+// Types
+import { Gift, User } from '../types';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -49,22 +53,74 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
+const giftsRef = db.collection('gifts');
+const usersRef = db.collection('users');
+
 const RotoryOn: FC = () => {
   const classes = useStyles();
-  const gifts = [
-    {
-      id: 0,
-      name: '特賞:デスノート',
-    },
-    {
-      id: 1,
-      name: '1等:死神の目',
-    },
-    {
-      id: 2,
-      name: '2等:裏蓋仕込み付き腕時計',
-    },
-  ];
+  const [gifts, setGifts] = useState<Gift[]>([]);
+  const [users, setUsers] = useState<User[]>([]);
+  const [targetUsers, setTargetUsers] = useState<User[]>([]);
+  const [selectedUser, setSelectedUser] = useState('');
+  const [selectedGiftId, setSelectedGiftId] = useState('');
+  const [timerId, setTimerId] = useState(0);
+
+  useEffect(() => {
+    const giftList: Gift[] = [];
+
+    giftsRef
+      .orderBy('order')
+      .get()
+      .then(snapshots => {
+        snapshots.forEach(snapshot => {
+          const gift = snapshot.data();
+          giftList.push(gift as Gift);
+        });
+        setGifts(giftList);
+      });
+    
+    const userList: User[] = [];
+
+    usersRef
+      .get()
+      .then(snapshots => {
+        snapshots.forEach(snapshot => {
+          const user = snapshot.data();
+          userList.push(user as User);
+        });
+        setUsers(userList);
+      })
+  }, []);
+
+  const choiseUser = () => {
+    if (!selectedGiftId) {
+      alert('賞を選択してください。');
+      return;
+    }
+    const id = window.setInterval(() => {
+      const index = Math.floor(Math.random() * targetUsers.length);
+      const user: User = targetUsers[index];
+      setSelectedUser(user.name);
+    }, 10);
+    setTimerId(id);
+  };
+
+  const stopChoise = async () => {
+    clearInterval(timerId);
+    setTimerId(0);
+    await giftsRef.doc(selectedGiftId).update({
+      winner: selectedUser,
+      updated_at: FirebaseTimestamp.now()
+    });
+  }
+
+  const handleChange = ((e: React.ChangeEvent<{value: unknown}>) => {
+    const giftId = e.target.value as string;
+    setSelectedGiftId(giftId);
+    const supplier = gifts.filter(gift => gift.uid === giftId)[0].supplier;
+    const userList = users.filter(user => user.name !== supplier);
+    setTargetUsers(userList);
+  });
 
   return (
     <div className={classes.root}>
@@ -87,25 +143,38 @@ const RotoryOn: FC = () => {
             抽選する賞を選んでください
           </InputLabel>
           <Select
-            labelId="rotory-type"
             id="select-gift"
+            labelId="rotory-type"
+            onChange={handleChange}
+            value={selectedGiftId}
           >
             {gifts.map(gift => (
-              <MenuItem value={gift.id}>
-                {gift.name}
+              <MenuItem value={gift.uid}>
+                {gift.award} : {gift.name}
               </MenuItem>
             ))}
           </Select>
         </FormControl>
         <Paper className={classes.paper}>
           <Typography variant="h3">
-            夜神月
+            {selectedUser}
           </Typography>
         </Paper>
-        <Button variant="outlined" color="primary" className={classes.btnStart}>
+        <Button
+          className={classes.btnStart}
+          color="primary"
+          disabled={(timerId !== 0) ? true : false}
+          onClick={() => choiseUser()}
+          variant="outlined"
+        >
           START!
         </Button>
-        <Button variant="outlined" color="secondary" className={classes.btn}>
+        <Button
+          className={classes.btn}
+          color="secondary"
+          onClick={() => stopChoise()}
+          variant="outlined"
+        >
           STOP!
         </Button>
       </Container>
