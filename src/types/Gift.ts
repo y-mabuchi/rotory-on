@@ -8,5 +8,5 @@ export interface Gift {
   supplier: string;
   uid: string;
   updated_at: string;
-  winner: string | null;
+  winner: string;
 }
