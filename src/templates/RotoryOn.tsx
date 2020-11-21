@@ -57,13 +57,15 @@ const RotoryOn: FC = () => {
   const classes = useStyles();
   const [gifts, setGifts] = useState<Gift[]>([]);
   const [users, setUsers] = useState<User[]>([]);
-  const [selectedUser, setSelectedUser] = useState<string | null>(null);
+  const [selectedUser, setSelectedUser] = useState('');
+  const [selectedGift, setSelectedGift] = useState('');
+  const [timerId, setTimerId] = useState('');
 
   useEffect(() => {
     const giftList: Gift[] = [];
 
     db.collection('gifts')
-      .orderBy('order', 'asc')
+      .orderBy('order')
       .get()
       .then(snapshots => {
         snapshots.forEach(snapshot => {
@@ -90,10 +92,12 @@ const RotoryOn: FC = () => {
   const choiseUser = () => {
     const index = Math.floor(Math.random() * users.length);
     const user: User = users[index];
-    console.log(index);
-    console.log(user.name);
     setSelectedUser(user.name);
   };
+
+  const handleChange = ((e: React.ChangeEvent<{value: unknown}>) => {
+    setSelectedGift(e.target.value as string);
+  });
 
   return (
     <div className={classes.root}>
@@ -116,8 +120,10 @@ const RotoryOn: FC = () => {
             抽選する賞を選んでください
           </InputLabel>
           <Select
-            labelId="rotory-type"
             id="select-gift"
+            labelId="rotory-type"
+            onChange={handleChange}
+            value={selectedGift}
           >
             {gifts.map(gift => (
               <MenuItem value={gift.uid}>
