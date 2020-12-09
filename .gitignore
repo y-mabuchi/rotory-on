@@ -25,4 +25,4 @@ yarn-error.log*
 
 # Firebase files
 firestore.rules
-src/firebase/confit.ts
+src/firebase/config.ts
